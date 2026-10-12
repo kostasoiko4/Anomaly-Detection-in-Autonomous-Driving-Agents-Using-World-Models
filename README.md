@@ -1,4 +1,3 @@
-[README.md](https://github.com/user-attachments/files/33335431/README.md)
 <div align="center">
 
 # Anomaly Detection in Autonomous Driving Agents Using World Models
@@ -14,7 +13,7 @@ Department of Informatics, Aristotle University of Thessaloniki
 ![CARLA](https://img.shields.io/badge/CARLA-0.9.15-1F2937)
 ![SheepRL](https://img.shields.io/badge/SheepRL-DreamerV3-6B7280)
 
-[Paper](#citation) · [Installation](#installation) · [Quick start](#quick-start) · [Reproducing the paper](#reproducing-the-paper) · [Citation](#citation)
+[Paper](pappers/Anomaly%20Detection%20in%20Autonomous%20Driving%20Agents%20Using%20World%20Models.pdf) · [Thesis](pappers/Anomaly%20Detection%20in%20Autonomous%20Driving%20Agents%20Using%20World%20Models%20Thesis%20Greek.pdf) · [Installation](#installation) · [Quick start](#quick-start) · [Reproducing the paper](#reproducing-the-paper) · [Citation](#citation)
 
 </div>
 
@@ -54,6 +53,22 @@ A **closed-loop supervisor** turns persistent System 1 detections into a progres
 - **Real time.** The full monitoring pipeline (actor, world model with KL rule and reconstruction, CNN, supervisor) takes 33 ms per step on average on an RTX 3080, against a 100 ms control period at 10 Hz.
 
 ## Repository structure
+
+```
+.
+├── code/          the code overlay for SheepRL (see below)
+├── docs/          INSTALL.md, MANUAL.md, requirements.txt and the README figures
+├── results/       the evaluation result files behind the paper's tables
+├── pappers/       the paper and the diploma thesis (PDF)
+└── README.md
+```
+
+| Document | Contents |
+|---|---|
+| [Paper](pappers/Anomaly%20Detection%20in%20Autonomous%20Driving%20Agents%20Using%20World%20Models.pdf) | *Anomaly Detection in Autonomous Driving Agents Using World Models* |
+| [Thesis](pappers/Anomaly%20Detection%20in%20Autonomous%20Driving%20Agents%20Using%20World%20Models%20Thesis%20Greek.pdf) | Diploma thesis, Aristotle University of Thessaloniki (in Greek) |
+| [docs/INSTALL.md](docs/INSTALL.md) | Full installation and reproduction guide |
+| [docs/MANUAL.md](docs/MANUAL.md) | Every configuration variable, the run matrix and the output format |
 
 The code is an **overlay** on top of SheepRL: install CARLA and SheepRL from their upstream sources, then copy these files into the SheepRL checkout. `dreamer_v3.py` and the rest of SheepRL are used unmodified.
 
@@ -100,50 +115,38 @@ Download the prebuilt **CARLA 0.9.15** Linux package from the [official releases
 
 The Python client is the pip package `carla==0.9.15`, installed in the next step. Client and server versions must match.
 
-### 2. Python environment
+### 2. This repository and the Python environment
 
 ```bash
 python3.8 -m venv ~/venvs/aos
 source ~/venvs/aos/bin/activate
 pip install --upgrade pip
-pip install -r requirements.txt
+
+git clone https://github.com/kostasoiko4/Anomaly-Detection-in-Autonomous-Driving-Agents-Using-World-Models.git
+pip install -r Anomaly-Detection-in-Autonomous-Driving-Agents-Using-World-Models/docs/requirements.txt
 ```
 
-PyTorch (DreamerV3) and TensorFlow (the CNN classifier) live in the same environment; the pinned versions in `requirements.txt` are a combination known to work.
+PyTorch (DreamerV3) and TensorFlow (the CNN classifier) live in the same environment; the pinned versions in `docs/requirements.txt` are a combination known to work.
 
 ### 3. SheepRL and the overlay
+
+From the same parent folder:
 
 ```bash
 git clone https://github.com/Eclectic-Sheep/sheeprl.git
 cd sheeprl
 pip install -e . --no-deps
 
-# copy the overlay into the checkout (from this repository's root)
-cp -r <this-repo>/code/PythonAPI .
-cp -r <this-repo>/code/sheeprl   .
+# copy the overlay into the SheepRL checkout
+cp -r ../Anomaly-Detection-in-Autonomous-Driving-Agents-Using-World-Models/code/PythonAPI .
+cp -r ../Anomaly-Detection-in-Autonomous-Driving-Agents-Using-World-Models/code/sheeprl   .
 ```
 
-All commands below run **from the root of the SheepRL checkout**, inside the virtual environment, with the CARLA server running.
-
-### 4. Pretrained models (optional)
-
-Trained agents and the classifier are provided separately, so retraining is optional:
-
-```
-models/
-├── dreamer_v3/
-│   ├── s1_static_route_ckpt_131000_0.ckpt
-│   ├── s2_random_route_ckpt_246000_0.ckpt
-│   └── s3_random_towns_ckpt_535000_0.ckpt
-└── classifier/
-    └── model_checkpoint_2.h5
-```
-
-Place the `models/` folder at the root of the SheepRL checkout.
+All commands below run **from the root of the SheepRL checkout**, inside the virtual environment, with the CARLA server running. See [docs/INSTALL.md](docs/INSTALL.md) for the full guide and troubleshooting.
 
 ## Quick start
 
-A short evaluation on the static route with a single parked car:
+A short evaluation on the static route with a single parked car, using an S1 agent trained as in [Step 1](#step-1-train-the-agents) and a classifier trained as in [Step 3](#step-3-train-the-classifier):
 
 1. In `sheeprl/envs/carla_env_dream.py` set `ROUTE_SCENARIO = "static"` and `OBSTACLE_REGIME = "single"`.
 2. In `sheeprl/algos/dreamer_v3/utils.py` set `OBSTACLE_REGIME = "single"`, `SAFETY_MODE = "baseline"` and `TEST_EPISODES = 3`.
@@ -151,7 +154,7 @@ A short evaluation on the static route with a single parked car:
 
 ```bash
 python3 sheeprl_eval.py +env=carla_env_dream \
-    checkpoint_path="models/dreamer_v3/s1_static_route_ckpt_131000_0.ckpt" \
+    checkpoint_path="<your S1 checkpoint>.ckpt" \
     fabric.accelerator=cuda env.capture_video=False
 ```
 
@@ -171,7 +174,7 @@ In `baseline` mode the detectors run and are logged but never act, so most episo
 
 ### Configuration
 
-Experiments are selected through global variables at the top of the files.
+Experiments are selected through global variables at the top of the files; [docs/MANUAL.md](docs/MANUAL.md) documents every one of them.
 
 | File | Variable | Values |
 |---|---|---|
@@ -192,7 +195,7 @@ One run per driving scenario, with `OBSTACLE_REGIME = "none"` and the matching `
 python3 sheeprl.py exp=dreamer_v3 env=carla_env_dream fabric.accelerator=cuda checkpoint.every=1000
 ```
 
-The evaluated checkpoints are at 131k (S1), 246k (S2) and 535k (S3) environment steps. Training can be resumed with `checkpoint.resume_from="<path to ckpt>"`.
+The paper evaluates the checkpoints at 131k (S1), 246k (S2) and 535k (S3) environment steps. Trained models are not included in this repository because of their size. Training can be resumed with `checkpoint.resume_from="<path to ckpt>"`.
 
 ### Step 2: collect the classifier dataset
 
@@ -226,9 +229,9 @@ For each of the six conditions (regimes R1, R2 × scenarios S1, S2, S3), run the
 
 Episodes are drawn independently in every run (routes, obstacle types and placements), so configurations are compared through the 95 % Wilson intervals of their rates; expect results to match within those intervals rather than digit for digit.
 
-### Outputs
+### Outputs and the included results
 
-Every run writes a JSON file with:
+The `results/` folder holds the result files of the evaluation runs reported in the paper, so the tables can be checked without running CARLA. Every run writes a JSON file with:
 
 - `summary`: outcome rates (collision, safe stop, lane departure, route completion, waypoint loss, timeout), stopping margin, brake onset, impact speed, early braking, alarm share, the detection metrics of both detectors against the label, and `config` with every setting of the run;
 - `episodes`: one record per episode with its outcome and, per frame, a trace of speed, obstacle distance, label, System 1 and System 2 decisions, alarm and brake.
@@ -239,17 +242,18 @@ The results hold under the conditions of the study: static obstacles; a fixed 24
 
 ## Citation
 
-If you use this work, please cite:
+If you use this work, please cite the [paper](pappers/Anomaly%20Detection%20in%20Autonomous%20Driving%20Agents%20Using%20World%20Models.pdf):
 
 ```bibtex
 @misc{oikonomou2026anomaly,
   title  = {Anomaly Detection in Autonomous Driving Agents Using World Models},
   author = {Oikonomou, Konstantinos and Tosidis, Pavlos-Apostolos and Tefas, Anastasios},
   year   = {2026},
-  note   = {Department of Informatics, Aristotle University of Thessaloniki}
+  note   = {Department of Informatics, Aristotle University of Thessaloniki},
+  url    = {https://github.com/kostasoiko4/Anomaly-Detection-in-Autonomous-Driving-Agents-Using-World-Models}
 }
 ```
 
 ## Acknowledgements
 
-This work builds on [CARLA](https://carla.org/), [SheepRL](https://github.com/Eclectic-Sheep/sheeprl) and [DreamerV3](https://danijar.com/project/dreamerv3/) (Hafner et al.). The System 2 rule follows *Novelty Detection in Reinforcement Learning with World Models* (Zollicoffer et al., ICML 2025), design choices for the driving environment were informed by [CarDreamer](https://github.com/ucd-dare/CarDreamer) (Gao et al., 2024), whose route-planning toolkit is included in `PythonAPI/` together with edited CARLA agents/navigation code.
+This work builds on [CARLA](https://carla.org/), [SheepRL](https://github.com/Eclectic-Sheep/sheeprl) and [DreamerV3](https://danijar.com/project/dreamerv3/) (Hafner et al.). The System 2 rule follows *Novelty Detection in Reinforcement Learning with World Models* (Zollicoffer et al., ICML 2025), design choices for the driving environment were informed by [CarDreamer](https://github.com/ucd-dare/CarDreamer) (Gao et al., 2024), included in `PythonAPI/` is the edited CARLA agents/navigation code.
