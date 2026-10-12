@@ -58,7 +58,6 @@ A **closed-loop supervisor** turns persistent System 1 detections into a progres
 .
 ├── code/          the code overlay for SheepRL (see below)
 ├── docs/          INSTALL.md, MANUAL.md, requirements.txt and the README figures
-├── results/       the evaluation result files behind the paper's tables
 ├── pappers/       the paper and the diploma thesis (PDF)
 └── README.md
 ```
@@ -229,9 +228,9 @@ For each of the six conditions (regimes R1, R2 × scenarios S1, S2, S3), run the
 
 Episodes are drawn independently in every run (routes, obstacle types and placements), so configurations are compared through the 95 % Wilson intervals of their rates; expect results to match within those intervals rather than digit for digit.
 
-### Outputs and the included results
+### Outputs
 
-The `results/` folder holds the result files of the evaluation runs reported in the paper, so the tables can be checked without running CARLA. Every run writes a JSON file with:
+Every run writes a JSON file with:
 
 - `summary`: outcome rates (collision, safe stop, lane departure, route completion, waypoint loss, timeout), stopping margin, brake onset, impact speed, early braking, alarm share, the detection metrics of both detectors against the label, and `config` with every setting of the run;
 - `episodes`: one record per episode with its outcome and, per frame, a trace of speed, obstacle distance, label, System 1 and System 2 decisions, alarm and brake.
@@ -256,4 +255,4 @@ If you use this work, please cite the [paper](pappers/Anomaly%20Detection%20in%2
 
 ## Acknowledgements
 
-This work builds on [CARLA](https://carla.org/), [SheepRL](https://github.com/Eclectic-Sheep/sheeprl) and [DreamerV3](https://danijar.com/project/dreamerv3/) (Hafner et al.). The System 2 rule follows *Novelty Detection in Reinforcement Learning with World Models* (Zollicoffer et al., ICML 2025), design choices for the driving environment were informed by [CarDreamer](https://github.com/ucd-dare/CarDreamer) (Gao et al., 2024), included in `PythonAPI/` is the edited CARLA agents/navigation code.
+This work builds on [CARLA](https://carla.org/), [SheepRL](https://github.com/Eclectic-Sheep/sheeprl) and [DreamerV3](https://danijar.com/project/dreamerv3/) (Hafner et al.). The System 2 rule follows *Novelty Detection in Reinforcement Learning with World Models* (Zollicoffer et al., ICML 2025), design choices for the driving environment were informed by [CarDreamer](https://github.com/ucd-dare/CarDreamer) (Gao et al., 2024), whose route-planning toolkit is included in `PythonAPI/` together with edited CARLA agents/navigation code.
