@@ -255,4 +255,4 @@ If you use this work, please cite the [paper](pappers/Anomaly%20Detection%20in%2
 
 ## Acknowledgements
 
-This work builds on [CARLA](https://carla.org/), [SheepRL](https://github.com/Eclectic-Sheep/sheeprl) and [DreamerV3](https://danijar.com/project/dreamerv3/) (Hafner et al.). The System 2 rule follows *Novelty Detection in Reinforcement Learning with World Models* (Zollicoffer et al., ICML 2025), design choices for the driving environment were informed by [CarDreamer](https://github.com/ucd-dare/CarDreamer) (Gao et al., 2024), whose route-planning toolkit is included in `PythonAPI/` together with edited CARLA agents/navigation code.
+This work builds on [CARLA](https://carla.org/), [SheepRL](https://github.com/Eclectic-Sheep/sheeprl) and [DreamerV3](https://danijar.com/project/dreamerv3/) (Hafner et al.). The System 2 rule follows *Novelty Detection in Reinforcement Learning with World Models* (Zollicoffer et al., ICML 2025), design choices for the driving environment were informed by [CarDreamer](https://github.com/ucd-dare/CarDreamer) (Gao et al., 2024), included in `PythonAPI/` is also the edited CARLA agents/navigation code.
